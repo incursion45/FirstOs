@@ -4,28 +4,30 @@ mov dh, 1
 int 0x10
 
 add32:
-    inc al
-    add al, 32
-    cmp al , 'Z' + 1
-    je exit
-    mov dh, 0
-    int 0x10
-    jmp loop
+    inc al ; adding 1 to al so loop can move forward
+    add al, 32 ; adding 32 to make lowercase
+    cmp al , 'Z' + 1 ; make sure we in bounds
+    je exit ; if we not exit
+    mov dh, 0 ; set case toggle
+    jmp jumpLoop ; jump back to loop
 
-sub32:
-    inc al
-    sub al, 32
-    cmp al , 'Z' + 1
-    je exit
-    mov dh, 1
-    int 0x10
-    jmp loop
+sub32: 
+    inc al ; adding 1 to al so loop can move forward
+    sub al, 32 ; subtract 32 to make uppercase
+    cmp al , 'Z' + 1 ; bounds check
+    je exit ; leaves if out of bounds 
+    mov dh, 1 ; set case toogle
+    jmp jumpLoop
 
 loop:
-    cmp dh, 1
-    je add32
-    jmp sub32
-   
+    cmp dh, 1 ; check if upper or lower
+    je add32 ; make lower
+    jmp sub32 ; make upper
+
+jumpLoop:
+    int 0x10
+    jmp loop
+
 
 exit:
     jmp $
